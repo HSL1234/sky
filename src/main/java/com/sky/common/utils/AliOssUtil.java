@@ -13,10 +13,10 @@ import java.io.ByteArrayInputStream;
 @Slf4j
 public class AliOssUtil {
 
-    private static String endpoint="oss-cn-beijing.aliyuncs.com";
-    private static String accessKeyId="LTAI5tHFXLqC7M7Vya7rpjMe";
-    private static String accessKeySecret="bjMV9v8D33E7NEq9Qvwbsbhzb84vHp";
-    private static String bucketName="sky-lists1";
+    private static String endpoint="";
+    private static String accessKeyId="";
+    private static String accessKeySecret="";
+    private static String bucketName="";
 
     /**
      * 文件上传
@@ -44,11 +44,11 @@ public class AliOssUtil {
         //文件访问路径规则 https://BucketName.Endpoint/ObjectName
         StringBuilder stringBuilder = new StringBuilder("https://");
         stringBuilder
-                .append(bucketName)
-                .append(".")
-                .append(endpoint)
-                .append("/")
-                .append(objectName);
+                。append(bucketName)
+                。append(".")
+                。append(endpoint)
+                。append("/")
+                。append(objectName);
 
         log.info("文件上传到:{}", stringBuilder.toString());
 
