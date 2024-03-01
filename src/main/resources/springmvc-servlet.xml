@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--MVC注解扫描-->
+    <context:component-scan base-package="com.sky.web,com.sky.config"/>
+
+    <!--开启MVC注解-->
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <!--String 返回结果消息转换-->
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/html;charset=utf-8</value>
+                    </list>
+                </property>
+            </bean>
+            <!--Fastjson返回结果消息转换-->
+            <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>application/json;charset=utf-8</value>
+                    </list>
+                </property>
+                <property name="fastJsonConfig">
+                    <bean class="com.alibaba.fastjson.support.config.FastJsonConfig">
+                        <property name="serializerFeatures">
+                            <array>
+                                <!-- 是否格式化输出日期 -->
+                                <value>WriteDateUseDateFormat</value>
+                            </array>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <!--允许knife4j静态资源-->
+    <mvc:resources location="classpath:/META-INF/resources/" mapping="doc.html"/>
+    <mvc:resources location="classpath:/META-INF/resources/webjars/" mapping="/webjars/**"/>
+
+    <mvc:resources mapping="/statics/**" location="/statics/"/>
+
+    <!--拦截器配置-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!--拦截管理员-->
+            <mvc:mapping path="/admin/**"/>
+            <!--不拦截对象-->
+            <mvc:exclude-mapping path="/admin/employee/login"/>
+            <mvc:exclude-mapping path="/admin/employee/logout"/>
+            <bean class="com.sky.interceptor.JwtTokenAdminInterceptor"/>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <!--拦截管理员-->
+            <mvc:mapping path="/user/**"/>
+            <!--不拦截对象-->
+            <mvc:exclude-mapping path="/user/shop/status"/>
+            <mvc:exclude-mapping path="/user/user/login"/>
+            <bean class="com.sky.interceptor.JwtTokenUserInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <!--上传配置-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="maxUploadSize" value="5242880"/>
+    </bean>
+
+</beans>
